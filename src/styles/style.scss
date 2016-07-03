@@ -1,9 +1,72 @@
-* {
+/* {
 	font-family: 'Roboto', sans-serif;
 	box-sizing: border-box;
 }
 
 li {
 	font-family: 'Shadows Into Light Two', cursive;
+} */
+
+
+$purple:     rgb(100,91,183);
+$blue:      rgb(34,37,105);
+$lavender:           rgb(216,160,217);
+
+input {
+    padding: 1%;
+    border: 1px solid $blue;
+    transition: .5s border ease;
+    font-size: 18px;
 }
 
+input:focus {
+    outline: none;
+    border: 3px solid $blue;
+}
+
+#headingContainer {
+
+    text-align: center;
+    h1 {
+        font-size: 96px;
+        color: $purple;
+        margin-bottom: 1%;
+    }
+    p {
+        font-size: 24px;
+
+    }
+}
+
+#guestsViewContainer {
+    text-align: center;
+    margin: 0 auto;
+    width: 80%;
+
+    #guestList {
+        border: 2px solid $blue;
+        min-height: 100px;
+
+        .guest {
+            text-align: left;
+            font-size: 24px;
+            background: $lavender;
+            padding: 2%;
+            color: white;
+            margin: 2%;
+            position: relative;
+
+            button {
+                position: absolute;
+                right: 2%;
+                top: 50%;
+                transform: translateY(-50%);
+                background: $purple;
+                padding: 1%;
+                border: none;
+                font-size: 20px;
+            }
+        }
+    }
+
+}

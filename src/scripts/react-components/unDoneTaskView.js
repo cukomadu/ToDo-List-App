@@ -6,6 +6,7 @@ import React from 'react'
 const unDoneTasksView = React.createClass({
 	render: function(){
 		return (
+			console.log('this is unDone Tasks View')
 			)
 	}
 	

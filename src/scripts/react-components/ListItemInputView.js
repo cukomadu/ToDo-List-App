@@ -3,9 +3,10 @@ import React from 'react'
 
 
 //Create All Tasks React Component
-const AllTasksView = React.createClass({
+const ListItemInputView= React.createClass({
 	render: function(){
 		return (
+			console.log('this is All Tasks View')
 			)
 	}
 	
@@ -15,4 +16,4 @@ const AllTasksView = React.createClass({
 
 
 //Export this file so its available to app.js
-export default AllTasksView
+export default ListItemInputView

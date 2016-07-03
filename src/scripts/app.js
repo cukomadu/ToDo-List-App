@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom'
 import Backbone from 'backbone'
 
 //Custom .js Files
-import ToDoListView from './react-components/toDoListView.js'
+import TDLAppView from './react-components/TDLAppView.js'
 
 
 //Todo List Model
-var ToDoListModel = Backbone.Model.extend({
+/*var ToDoListModel = Backbone.Model.extend({
 
 })
 
@@ -17,19 +17,30 @@ var ToDoListModel = Backbone.Model.extend({
 //Todo List Collection
 var ToDoListCollection = Backbone.Collection.extend({
 
-})
+}) */
 
 
 
 //App Router Function
 var ToDoListRouter = Backbone.Router.extend({
+routes: {
+	'*home': 'showAllTasks'
+},
+
+showAllTasks: function(){
+	console.log('this is All Tasks View')
+
+	ReactDOM.render(<TDLAppView />, document.querySelector('.container'))
+
+},
 
 
 initialize: function(){
 	Backbone.history.start()
 }
 
+
 })
 
 
-new ToDoListRouter ()
+new ToDoListRouter()

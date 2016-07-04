@@ -3,18 +3,35 @@ import React from 'react'
 
 
 //Import all custom files referenced in this file
-/*import ListItemInputView from 'allTasksView.js'
-import DoneTasksView from 'doneTasksView.js'
-import UndoneTasksView from 'undoneTasksView.js'*/
+import UserInputView from './UserInputView.js'
+import ToDoListView  from './ToDoListView.js'
+/*iimport UndoneTasksView from 'undoneTasksView.js'*/
 
 
-//Create Main React Component
+//Create Top Level React Component
 
 const TDLAppView = React.createClass({
+
+
+
 	render: function(){
+		console.log('this is TDLAppView')
+		console.log('First Pass: this is backbone collection passed in backbone router', this.props)
 		return (
-				<div>
-					<div className="homeView" id="header">
+				<div id="tdlViewContainer">
+					<Header />
+					<UserInputView />
+					<ToDoListView />
+				</div>
+			)
+	}
+})
+
+const Header = React.createClass({
+	render: function(){
+		console.log('this is the Header Component')
+		return (
+				<div className="header">
 						<h1>Todosfy</h1>
 						<div id="nav-buttons">
 							<ul>
@@ -24,16 +41,10 @@ const TDLAppView = React.createClass({
 								<li>Undone</li>
 							</ul>
 						</div>
-					</div>
-					{/*<ListItemInputView />
-					<DoneTasksView />
-					<UndoneTasksView />*/}
 				</div>
 			)
+		
 	}
-	
-
-
 })
 
 

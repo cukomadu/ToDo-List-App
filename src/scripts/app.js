@@ -8,17 +8,17 @@ import TDLAppView from './react-components/TDLAppView.js'
 
 
 //Todo List Model
-/*var ToDoListModel = Backbone.Model.extend({
-
+var ToDoListModel = Backbone.Model.extend({
+	defaults: {
+		status: 'undone'
+	}
 })
-
 
 
 //Todo List Collection
 var ToDoListCollection = Backbone.Collection.extend({
-
-}) */
-
+	model: ToDoListModel
+}) 
 
 
 //App Router Function
@@ -28,9 +28,11 @@ routes: {
 },
 
 showAllTasks: function(){
-	console.log('this is All Tasks View')
+	console.log('this is To do List Router')
 
-	ReactDOM.render(<TDLAppView />, document.querySelector('.container'))
+	var toDoListCollection = new ToDoListCollection ()
+
+	ReactDOM.render(<TDLAppView todolistColl={toDoListCollection}/>, document.querySelector('.container'))
 
 },
 
@@ -39,8 +41,6 @@ initialize: function(){
 	Backbone.history.start()
 }
 
-
 })
-
 
 new ToDoListRouter()

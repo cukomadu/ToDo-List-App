@@ -1,17 +1,26 @@
 //Import all standard libraries referenced in this file
 import React from 'react'
 
+import ListItemView from './ListItemView.js'
 
 //Create All Tasks React Component
 const ToDoListView = React.createClass({
-	render: function(){
-		return (
-			console.log('this is Done Tasks View')
-			)
-	}
-	
 
-	
+	_convertListEntrytoModel: function(todolistColl){
+		return todolistColl.map((listItemModel) => <ListItemView listItemModel={listItemModel} />)
+	},
+
+	render: function(){
+		//console.log('hello from ToDoListView', this.props)
+		//console.log('this is Done Tasks View')
+		return (
+					<div>
+						<ul>
+							{this._convertListEntrytoModel(this.props.todolistColl)}
+						</ul>
+					</div>
+				)
+	}	
 })
 
 

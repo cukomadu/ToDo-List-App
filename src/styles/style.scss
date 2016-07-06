@@ -1,11 +1,23 @@
-/* {
+* {
 	font-family: 'Roboto', sans-serif;
 	box-sizing: border-box;
 }
 
 li {
 	font-family: 'Shadows Into Light Two', cursive;
-} */
+} 
+
+a {
+        text-decoration: none;
+        font-family: 'Shadows Into Light Two', cursive;
+        padding: 2% 4%;
+        margin: 2% 2% 0 2%;
+        color: #d8a0d9;
+       // background: #222569;
+        border: 5px solid #555;
+        display: inline-block;
+       // border-bottom: none;
+    }
 
 
 $purple:     rgb(100,91,183);

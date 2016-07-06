@@ -23,23 +23,23 @@ var ToDoListCollection = Backbone.Collection.extend({
 
 //App Router Function
 var ToDoListRouter = Backbone.Router.extend({
-routes: {
-	'*home': 'showAllTasks'
-},
+	routes: {
+		'*home': 'showAllTasks'
+	},
 
-showAllTasks: function(){
-	console.log('this is To do List Router')
+	showAllTasks: function(){
+		console.log('this is To do List Router')
 
-	var toDoListCollection = new ToDoListCollection ()
+		var toDoListCollection = new ToDoListCollection ()
 
-	ReactDOM.render(<TDLAppView todolistColl={toDoListCollection}/>, document.querySelector('.container'))
+		ReactDOM.render(<TDLAppView todolistColl={toDoListCollection}/>, document.querySelector('.container'))
 
-},
+	},
 
 
-initialize: function(){
-	Backbone.history.start()
-}
+	initialize: function(){
+		Backbone.history.start()
+	}
 
 })
 

@@ -36,14 +36,15 @@ input:focus {
     border: 3px solid $blue;
 }
 
-#headingContainer {
+.AppViewController {
+    text-align: left;
 
-    text-align: center;
-    h1 {
-        font-size: 96px;
+    h1  {
+        font-size: 56px;
         color: $purple;
-        margin-bottom: 1%;
+        //margin-bottom: 1%;
     }
+
     p {
         font-size: 24px;
 

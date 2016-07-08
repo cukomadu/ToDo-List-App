@@ -1,46 +1,39 @@
-//Standard Libraries
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Backbone from 'backbone'
+import Backbone from 'Backbone'
 
-//Custom .js Files
-import TDLAppView from './react-components/TDLAppView.js'
+import AppViewController from './react-components/AppViewController.js'
 
+var TodoModel = Backbone.Model.extend({
 
-//Todo List Model
-var ToDoListModel = Backbone.Model.extend({
-	defaults: {
-		status: 'undone'
-	}
 })
 
+var TodoCollection = Backbone.Collection.extend({
+	model: TodoModel
+})
 
-//Todo List Collection
-var ToDoListCollection = Backbone.Collection.extend({
-	model: ToDoListModel
-}) 
-
-
-//App Router Function
-var ToDoListRouter = Backbone.Router.extend({
+const AppRouter = Backbone.Router.extend({
+	
 	routes: {
+		'all': 'showAllTasks',
+		//'/done': 'showDoneTasks',
+		//'/undone': 'showUndoneTasks',
 		'*home': 'showAllTasks'
 	},
 
-	showAllTasks: function(){
-		console.log('this is To do List Router')
+	showAllTasks: function() {
+		console.log('showing all tasks view')
+		var todoCollection = new TodoCollection()
 
-		var toDoListCollection = new ToDoListCollection ()
-
-		ReactDOM.render(<TDLAppView todolistColl={toDoListCollection}/>, document.querySelector('.container'))
-
+		ReactDOM.render(<AppViewController backboneColl={todoCollection}/>,document.querySelector('.container'))
+		
 	},
 
 
 	initialize: function(){
+		console.log('app router is working')
 		Backbone.history.start()
 	}
-
 })
 
-new ToDoListRouter()
+var router = new AppRouter()

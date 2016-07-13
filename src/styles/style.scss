@@ -1,28 +1,54 @@
 * {
-	font-family: 'Roboto', sans-serif;
+	//font-family: 'Roboto', sans-serif;
+    font-family: 'Shadows Into Light Two', cursive;
 	box-sizing: border-box;
 }
 
-li {
-	font-family: 'Shadows Into Light Two', cursive;
-} 
+$purple:     rgb(100,91,183);
+$lavender:           rgb(216,160,217);
+$orange: #f45800;
+$blue: #0192B5;
+
+.done {
+    text-decoration: line-through;
+    color: $blue;
+}
+
+.undone {
+    text-decoration: none;
+}
+
+.Task {
+    display: flex;
+
+    * {
+        flex: 1;
+        margin: 5%, auto;
+        font-size: 24px;
+    }
+
+    li {
+        font-family: 'Shadows Into Light Two', cursive;
+        list-style: none;
+    } 
+}
+
+
 
 a {
         text-decoration: none;
         font-family: 'Shadows Into Light Two', cursive;
         padding: 2% 4%;
         margin: 2% 2% 0 2%;
-        color: #d8a0d9;
+        color: #555;
        // background: #222569;
-        border: 5px solid #555;
+        //border: 5px solid #555;
         display: inline-block;
        // border-bottom: none;
     }
 
 
-$purple:     rgb(100,91,183);
-$blue:      rgb(34,37,105);
-$lavender:           rgb(216,160,217);
+
 
 input {
     padding: 1%;
@@ -36,13 +62,23 @@ input:focus {
     border: 3px solid $blue;
 }
 
-.AppViewController {
+.AppView {
     text-align: left;
 
-    h1  {
-        font-size: 56px;
-        color: $purple;
-        //margin-bottom: 1%;
+    .Header {
+
+        #hLeft  {
+            font-size: 56px;
+            color: $blue;
+            //margin-bottom: 1%;
+        }
+
+        #hRight  {
+            font-size: 56px;
+            color: $orange;
+            //margin-bottom: 1%;
+        }
+
     }
 
     p {
@@ -82,4 +118,15 @@ input:focus {
         }
     }
 
+}
+
+@media screen and (min-width: 800px) {
+    #inner-container {
+        margin: 240px auto 0;
+        max-width: 480px;
+    }
+
+    #todo-list {
+        width: 100%;
+    }
 }

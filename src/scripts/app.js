@@ -1,39 +1,50 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Backbone from 'Backbone'
+import Backbone from 'backbone'
 
-import AppViewController from './react-components/AppViewController.js'
+//import AppViewController from './components/AppViewController.js'
+import AppView from './components/AppView.js'
+import {TodoListCollection, TodoListModel} from './components/models.js'
+import DoneTasks from './components/DoneTasks.js'
 
-var TodoModel = Backbone.Model.extend({
 
-})
+const app = function(){
 
-var TodoCollection = Backbone.Collection.extend({
-	model: TodoModel
-})
-
-const AppRouter = Backbone.Router.extend({
-	
-	routes: {
-		'all': 'showAllTasks',
-		//'/done': 'showDoneTasks',
-		//'/undone': 'showUndoneTasks',
-		'*home': 'showAllTasks'
-	},
-
-	showAllTasks: function() {
-		console.log('showing all tasks view')
-		var todoCollection = new TodoCollection()
-
-		ReactDOM.render(<AppViewController backboneColl={todoCollection}/>,document.querySelector('.container'))
+	const AppRouter = Backbone.Router.extend({
 		
-	},
+		routes: {
+			'all': 'showAllTasks',
+			'done': 'showDoneTasks',
+			'undone': 'showUndoneTasks',
+			'*catchall': '_redirect'
+		},
 
+		showAllTasks: function() {
+			console.log('showing all tasks view')
+			var todolistCollection = new TodoListCollection()
 
-	initialize: function(){
-		console.log('app router is working')
-		Backbone.history.start()
-	}
-})
+			ReactDOM.render(<AppView backboneColl={todolistCollection}/>,document.querySelector('.container'))
+			
+		},
 
-var router = new AppRouter()
+		showDoneTasks: function(){
+			console.log('showing done tasks view')
+			var todolistCollection = new TodoListCollection()
+			ReactDOM.render(<DoneTasks backboneColl={todolistCollection}/>,document.querySelector('.container'))
+			
+		},
+
+		_redirect: function(){
+			location.hash = "all"
+		},
+
+		initialize: function(){
+			console.log('app router is working')
+			Backbone.history.start()
+		}
+	})
+
+	var router = new AppRouter()
+}
+
+app()

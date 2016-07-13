@@ -12,7 +12,7 @@ const AppView = React.createClass({
     getInitialState: function(){
         return {
             todoColl: this.props.backboneColl,
-            currentView: 'all',
+            currentView: 'alltasksview',
             status: 'undone'
             
         }
@@ -20,14 +20,83 @@ const AppView = React.createClass({
 
     componentWillMount: function(){
 
-        this.state.todoColl.on('update', () => {
+        // Backbone.Events.on('update', () => {
+        //     this.setState({
+        //         todoColl: this.state.todoColl
+        //     })
+        // })
+
+        // or trigger your own event
+        Backbone.Events.on('updateTodoList', (userEntry)=>{
+            var todoModel = new TodoListModel({
+                taskName: userEntry,
+                status: 'undone'
+            })
+
+            this.state.todoColl.add(todoModel)  
+
+            // or new collection ...
+            // var todoCollCopy = new TodoListCollection(this.state.todoColl.models)
+            // todoCollCopy.add(todoModel)
+
             this.setState({
                 todoColl: this.state.todoColl
             })
         })
-      
-        //Backbone.Events.on('changeAppView', updateView)
 
+        Backbone.Events.on('updateCompletionStatus', (cid , completionStatus) => {
+            console.log(this.state.todoColl)
+            console.log(cid)
+            console.log(completionStatus)
+
+            var todoCollCopy = new TodoListCollection(this.state.todoColl.models)
+            console.log("theCollection", todoCollCopy)
+
+            todoCollCopy._byId[cid].set({
+                status: completionStatus
+            })
+
+            console.log('model set on collection', todoCollCopy._byId[cid])
+
+            this.setState({
+                todoColl: todoCollCopy
+            })
+            console.log('target model', todoCollCopy._byId[cid])
+        })
+
+
+       Backbone.Events.on('updateAppView', (clickedView) => {
+             this.setState({
+                currentView: clickedView
+            })
+       })
+
+       Backbone.Events.on('removeTodo', (model)=>{
+            var todoCollCopy = new TodoListCollection(this.state.todoColl.models)
+            todoCollCopy.remove(model.cid)
+            this.setState({
+                todoColl: todoCollCopy
+            })
+       })
+
+       Backbone.Events.on('changealltoComplete', () => {
+            var todoCollCopy = new TodoListCollection(this.state.todoColl.models)
+           // console.log("theCollection", todoCollCopy)
+
+            todoCollCopy.map((model) => {
+                model.set({
+                    status: 'done'
+                })
+
+            })
+            
+
+            this.setState({
+                todoColl: todoCollCopy
+            })
+
+       })
+       
         // Backbone.Events.on('updateAppView', (clickedView) => {
         //     console.log('clickedView successfully passed up', clickedView)
         //     this.setState({
@@ -37,13 +106,13 @@ const AppView = React.createClass({
     },
 
     render: function(){
-        console.log('rendering')
+        console.log('rendering', this.state.currentView)
         return (
                 <div className="AppView">
                     <Header />
                     <NavView />
                     <InputBox todoColl={this.state.todoColl}/>
-                    <TaskContainer todoColl={this.state.todoColl}/> 
+                    <TaskContainer todoColl={this.state.todoColl} currView={this.state.currentView}/> 
                 </div>
             )
     }
@@ -62,21 +131,23 @@ const Header = React.createClass({
 
 const NavView = React.createClass({
 
-    // _changeView: function(e){
-    //    var clickedView = e.target.dataset['view']
+    _changeView: function(e){
+        e.preventDefault()
+       var clickedView = e.target.dataset['view']
+       console.log('this is clickedView: ', clickedView)
 
-    //     Backbone.Events.trigger('updateAppView', clickedView)
-    // },
-    //*onClick={this._changeView */
+     Backbone.Events.trigger('updateAppView', clickedView)
+    },
+    
 
     render: function(){
         return (
-                <div className="NavViewComponent">
-                    <a href="#all" data-view="alltasksview">All Tasks</a>
+                <div className="NavViewComponent" onClick={this._changeView}>
+                    <a href="#" data-view="alltasksview">All Tasks</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="#done" data-view="donetasksview">Done Tasks</a>
+                    <a href="#" data-view="donetasksview">Done Tasks</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="#undone" data-view="undonetasksview">Undone Tasks</a>
+                    <a href="#" data-view="undonetasksview">Undone Tasks</a>
                 </div>
             )
     }
@@ -89,14 +160,16 @@ const InputBox = React.createClass({
         if(e.keyCode === 13){
             var userEntry = e.target.value
             console.log(userEntry)
-            
-            var todoModel = new TodoListModel({
-                taskName: userEntry
-            })
-            this.props.todoColl.add(todoModel)
+
+            Backbone.Events.trigger('updateTodoList', userEntry)
             
             e.target.value = ''
         }
+    },
+
+    _markAllComplete: function() {
+        Backbone.Events.trigger('changealltoComplete')
+
     },
 
     render: function(){
@@ -105,6 +178,7 @@ const InputBox = React.createClass({
                     <input className="u-full-width" 
                     type="text"  
                     placeholder="Enter A New Task and Press Enter" onKeyDown={this._getUserInput}/>
+                    <input type="checkbox" onChange={this._markAllComplete}/><p>Mark All As Done</p>
                 </div>
             )
     }
@@ -112,66 +186,137 @@ const InputBox = React.createClass({
 
 
 const TaskContainer = React.createClass({
-    render: function(){
-        console.log(this.props.todoColl.models)
-        return (
-                <ul>
-                    {this.props.todoColl.map((model) => {
+    _countUndoneTasks: function(todosColl){
+        
+        var filteredArray = todosColl.filter((model) => {return model.get('status') === 'undone'})
+        return filteredArray.length
+    },
+
+    _createJSXForViewType: function(currView){
+        if(currView === 'alltasksview'){
+            return (
+                <div>
+                    <h1>All Tasks View</h1>
+                    {
+                        this.props.todoColl.map((model) => {
                         return <Task key={model.cid} todomodel={model} />
                         })
                     }
+                    <div>
+                        <p>{ this._countUndoneTasks(this.props.todoColl) } Tasks Left!</p>
+                    </div>
+                </div>
+            )
+
+        }
+
+        if(currView === 'donetasksview'){
+
+             return (
+                    <div>
+                        <h1>Done Tasks View</h1>
+                        {
+                            this.props.todoColl
+                                .filter((model) => {
+                                    if(model.get('status') === 'done'){
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                })
+                                .map((model) => {
+                                    return <Task key={model.cid} todomodel={model} />
+                                })
+                        }
+                        <div>
+                            <p>{this.props.todoColl.length} Tasks Left!</p>
+                        </div>
+                    </div>
+                )
+        }
+
+        if(currView === 'undonetasksview'){
+             return (
+                    <div>
+                        <h1>Undone Tasks View</h1>
+                        {
+                            this.props.todoColl
+                                .filter((model) => {
+                                    if(model.get('status') === 'undone'){
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                })
+                                .map((model) => {
+                                    return <Task key={model.cid} todomodel={model} />
+                                })
+                        }
+                        <div>
+                            <p>{this.props.todoColl.length} Tasks Left!</p>
+                        </div>
+                    </div>
+                )
+        }
+    },
+
+    render: function(){
+        console.log(this.props.todoColl.models)
+        console.log('tasks container this.props.currView: ', this.props.currView)
+
+
+        return (
+                <ul>
+                    { this._createJSXForViewType(this.props.currView)}
                 </ul>
             )
     }
 })
 
 
+
 const Task = React.createClass({
 
     getInitialState: function(){
         return {
-            complete: false,
             textColor: '#f45800'
         }
     },
 
     _toggleTask: function(e){
         console.log(e.target)
-        if(this.state.complete === false){
-            this.setState({
-                complete: true
-            })
+        var completionStatus
+        if(this.props.todomodel.get('status') === 'undone'){
             console.log('task complete')
+            completionStatus = 'done'
 
         } else {
-            this.setState({
-                complete: false
-            })
+            completionStatus = 'undone'
             console.log('task incomplete')
         }
+
+        Backbone.Events.trigger("updateCompletionStatus", this.props.todomodel.cid , completionStatus)
     },
 
     
     _removeTask:function(){
-       this.props.todomodel.destroy()
+        console.log('removing model')
+       var removeModel = this.props.todomodel
+
+       Backbone.Events.trigger('removeTodo', removeModel)
     },
     
     
     render: function(){
         console.log(this.props.todomodel)
+
         var todoClass
 
-        if(this.state.complete === true){
+        if(this.props.todomodel.get('status') === 'done'){
             todoClass = 'done'
-            this.props.todomodel.set({
-                status: 'done'
-            })
-
         } else {
             todoClass = 'undone'
-           this.props.todomodel.set({
-                status: 'undone'
-            })
+           //this.props.todomodel.set({
         }
 
         var styleObj = {
@@ -180,9 +325,13 @@ const Task = React.createClass({
 
         var statusVal = this.props.todomodel.get('status')
 
+
         return (
                 <li className="Task" style={styleObj}>
-                    <input type="checkbox" onChange={this._toggleTask}/>
+                    <div className="cool-check"> 
+                        <input type="checkbox" onChange={this._toggleTask}/>
+                        <div></div>
+                    </div>
                     &nbsp;
                     <strong className={todoClass}>{this.props.todomodel.get('taskName')}</strong>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

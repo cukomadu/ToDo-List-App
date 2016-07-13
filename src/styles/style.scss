@@ -82,7 +82,7 @@ input:focus {
     }
 
     p {
-        font-size: 24px;
+        font-size: 16px;
 
     }
 }
@@ -128,5 +128,28 @@ input:focus {
 
     #todo-list {
         width: 100%;
+    }
+}
+
+.cool-check{
+    position: relative;
+    > *{
+        position: absolute;
+        width: 50%;
+        height: 50%;
+    }
+
+    > div {
+        background: $orange;
+        z-index: 1;
+    }
+
+    >input{
+        opacity: 0;
+        z-index: 2;
+    }
+
+    input:checked + * {
+        background: $blue;
     }
 }

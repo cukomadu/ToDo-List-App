@@ -5,7 +5,6 @@ import Backbone from 'backbone'
 //import AppViewController from './components/AppViewController.js'
 import AppView from './components/AppView.js'
 import {TodoListCollection, TodoListModel} from './components/models.js'
-import DoneTasks from './components/DoneTasks.js'
 
 
 const app = function(){
@@ -14,8 +13,6 @@ const app = function(){
 		
 		routes: {
 			'all': 'showAllTasks',
-			'done': 'showDoneTasks',
-			'undone': 'showUndoneTasks',
 			'*catchall': '_redirect'
 		},
 
@@ -24,13 +21,6 @@ const app = function(){
 			var todolistCollection = new TodoListCollection()
 
 			ReactDOM.render(<AppView backboneColl={todolistCollection}/>,document.querySelector('.container'))
-			
-		},
-
-		showDoneTasks: function(){
-			console.log('showing done tasks view')
-			var todolistCollection = new TodoListCollection()
-			ReactDOM.render(<DoneTasks backboneColl={todolistCollection}/>,document.querySelector('.container'))
 			
 		},
 
